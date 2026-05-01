@@ -1,5 +1,5 @@
 # Tailscale for Linux (No Sudo Required!)  
-*Run Tailscale VPN in Linux with persistent IPs – no sudo required. Simple setup, secure connections.*  
+*Run Tailscale VPN in Linux machines with persistent IPs – without requiring sudo privledges. Simple setup, secure connections.*  
 
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)  
 
