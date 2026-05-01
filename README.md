@@ -1,5 +1,5 @@
-# Tailscale for GitHub Codespaces  
-*Run Tailscale VPN in GitHub Codespaces with persistent IPs – no sudo required. Simple setup, secure connections.*  
+# Tailscale for Linux (No Sudo Required!)  
+*Run Tailscale VPN in Linux with persistent IPs – no sudo required. Simple setup, secure connections.*  
 
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)  
 
