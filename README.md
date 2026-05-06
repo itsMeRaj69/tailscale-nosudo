@@ -33,8 +33,9 @@ curl -fsSL https://tailscale.com/install.sh | sh
 
 > For Linux machines 
 >
-> ```shell
->    echo 'TS_AUTH_KEY=pasteyourauthkey' >> ~/.env ```
+> ```bash 
+> echo 'TS_AUTH_KEY=pasteyourauthkey' >> ~/.env
+> ```
 
 ### 4. Download Control Scripts
 ```bash
