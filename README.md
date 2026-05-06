@@ -33,11 +33,12 @@ curl -fsSL https://tailscale.com/install.sh | sh
 
 > For Linux machines 
 >
-> ```echo 'export TS_AUTH_KEY="tskey-auth-XXXXXX"' >> ~/.bashrc   # bash
+> ```
+> echo 'export TS_AUTH_KEY="tskey-auth-XXXXXX"' >> ~/.bashrc   # bash
 > echo 'export TS_AUTH_KEY="tskey-auth-XXXXXX"' >> ~/.zshrc    # zsh
 > source ~/.bashrc  # or source ~/.zshrc
 > ```
-> Replace `tskey-auth-XXXXXX`with your actual authkey.
+> **Replace `tskey-auth-XXXXXX`with your actual authkey.**
 
 ### 4. Download Control Scripts
 ```bash
@@ -60,7 +61,7 @@ chmod +x ~/.local/bin/start-tailscale ~/.local/bin/stop-tailscale ~/.local/bin/s
 | `status-tailscale` | Check Tailscale Status |
 
 ---
-(All scripts support a `--verbose` flag for full status output. Example: start-tailscale --verbose)
+- All scripts support a `--verbose` flag for full status output. (e.g: start-tailscale --verbose)
 
 ## Tips  
 - **Revoke old keys** in [Tailscale - AuthKeys](https://login.tailscale.com/admin/authkeys)  
