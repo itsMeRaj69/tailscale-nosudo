@@ -1,0 +1,30 @@
+#!/bin/bash
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+CYAN='\033[0;36m'
+DIM='\033[2m'
+BOLD='\033[1m'
+RESET='\033[0m'
+
+VERBOSE=0
+[ "$1" = "--verbose" ] && VERBOSE=1
+
+echo -e "${YELLOW}[-] Checking status...${RESET}"
+
+if [ ! -S /tmp/tailscale.sock ]; then
+  echo -e "${YELLOW}[!] Tailscale is not running${RESET}"
+  exit 0
+fi
+
+[ $VERBOSE -eq 1 ] && tailscale --socket=/tmp/tailscale.sock status --peers=false 2>/dev/null
+
+if tailscale --socket=/tmp/tailscale.sock status &>/dev/null; then
+  echo -e "\nStatus: ${GREEN}Active${RESET}\n"
+  echo -e "${BOLD}IP:${RESET} $(tailscale --socket=/tmp/tailscale.sock ip -4)"
+  echo -e "Logs: ${DIM}${CYAN}/tmp/tailscaled.log${RESET}"
+else
+  echo -e "\nStatus: ${RED}Inactive${RESET}"
+  echo -e "Logs: ${DIM}${CYAN}/tmp/tailscaled.log${RESET}"
+fi

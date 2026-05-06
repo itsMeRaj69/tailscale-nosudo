@@ -1,64 +1,74 @@
 # Tailscale for Linux (No Sudo Required!)  
-*Run Tailscale VPN in Linux machines with persistent IPs – without requiring sudo privledges. Simple setup, secure connections.*  
+*Run Tailscale VPN in Linux machines with persistent IPs – without requiring sudo priveleges. Simple and secure setup.*  
 
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)  
 
-## 🌟 Why Use This?  
+## Why Use This?  
 - 🌐 **Same IP every time** – No more reconfiguring tools  
 - 🔒 **Private networking** – Enjoy encrypted peer-to-peer connections of Tailscale 
 - ⚡ **Easy Setup** – Ready in seconds!  
-- 🚫 **No special permissions** – Works without `sudo`  
+- 🚫 **No high priveleges permissions** – Works without `sudo`  
 
 ---
 
-## 🚀 Get Started  
+## Getting Started  
 
 ### 1. Install Tailscale  
 ```bash
 curl -fsSL https://tailscale.com/install.sh | sh
 ```
+### 2. Obtaining an Auth Key
+1. Login with your Tailscale Account.
+2. Get a key from [Tailscale - AuthKeys](https://login.tailscale.com/admin/authkeys)
+### 3. Setup your Auth Key
 
-### 2. Add Your Key
-1. Get a key from [Tailscale - AuthKeys](https://login.tailscale.com/admin/authkeys)
-2. Save it securely:
-```bash
-mkdir -p ~/.config/tailscale
-echo "tskey-auth-XXXXXX" > ~/.config/tailscale/authkey
-chmod 600 ~/.config/tailscale/authkey
-```
-*(Replace `tskey-auth-XXXXXX` with your actual key)*
+> For Github Codespaces:
+>
+> 1. Visit github.com
+> 2. Go to Profile -> Settings -> [Codespaces](https://github.com/settings/codespaces)
+> 3. Under **Secrets**, tap on "New secret" button.
+> 4. Paste `TS_AUTH_KEY` inside the input box which is below the "Name" field, and Paste the copied key from [Tailscale - AuthKeys](https://login.tailscale.com/admin/authkeys) inside the input box of the "Value" field.
+> 5. Click on the "Select repositories" button and select the repos in which you want to access your AuthKey.
+> 6. Lastly, click on the Add secret button.
 
-### 3. Download Control Scripts
+> For Linux Machines
+>
+> ```shell
+    echo 'TS_AUTH_KEY=pasteyourauthkey' >> ~/.env ```
+
+
+### 4. Download Control Scripts
 ```bash
-wget -O ~/start-tailscale https://raw.githubusercontent.com/itsMeRaj69/tailscale-codespaces/main/scripts/start-tailscale
-wget -O ~/stop-tailscale https://raw.githubusercontent.com/itsMeRaj69/tailscale-codespaces/main/scripts/stop-tailscale
+wget -O ~/.local/bin/start-tailscale https://raw.githubusercontent.com/itsMeRaj69/tailscale-nosudo/main/scripts/start-tailscale
+wget -O ~/.local/bin/stop-tailscale https://raw.githubusercontent.com/itsMeRaj69/tailscale-nosudo/main/scripts/stop-tailscale
+wget -0 ~/.local/bin/status-tailscale https://raw.gihubusercontent.com/itsMeRaj69/tailscale-nosudo/main/scripts/status-tailscale
 ```
-### 4. Make them executable
+### 5. Make them executable
 ```bash
-chmod +x ~/start-tailscale ~/stop-tailscale
+chmod +x ~/.local/bin/start-tailscale ~/.local/bin/stop-tailscale ~/.local/bin/status-tailscale
 ```
 
 ---
 
-## 🛠️ Usage  
+## Usage  
 | Command | What It Does |  
 |---------|--------------|  
-| `~/start-tailscale` | Connect to your VPN |  
-| `~/stop-tailscale`  | Disconnect safely |  
+| `start-tailscale` | Start Tailscale connection |  
+| `stop-tailscale`  | Stop/Disconnect safely |  
+| `status-tailscale` | Check Tailscale Status |
 
 ---
 
-## 🔐 Pro Tips  
-- ♻️ Use **reusable keys** for convenience  
-- 🗑️ **Revoke old keys** in [Tailscale - AuthKeys](https://login.tailscale.com/admin/authkeys)  
+## Tips  
+- **Revoke old keys** in [Tailscale - AuthKeys](https://login.tailscale.com/admin/authkeys)  
 
 ---
 
-## ❓ Need Help?
+## Need Help?
 ```bash
-# Reset everything (fresh start)
+# Reset everything
 rm -rf ~/.config/tailscale/ /tmp/tailscale*
 ```
 
-## 📜 License  
+## License  
 [MIT Licensed](./LICENSE) — *Not affiliated with Tailscale Inc.*

@@ -1,28 +1,72 @@
 #!/bin/bash
-# Cleanup
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+CYAN='\033[0;36m'
+DIM='\033[2m'
+BOLD='\033[1m'
+RESET='\033[0m'
+
+VERBOSE=0
+[ "$1" = "--verbose" ] && VERBOSE=1
+
+echo -e "${YELLOW}[-] Checking status...${RESET}"
+
+if [ -S /tmp/tailscale.sock ] && tailscale --socket=/tmp/tailscale.sock status &>/dev/null; then
+  echo -e "${YELLOW}[*] Tailscale already running${RESET}"
+  [ $VERBOSE -eq 1 ] && tailscale --socket=/tmp/tailscale.sock status --peers=false
+  if tailscale --socket=/tmp/tailscale.sock status &>/dev/null; then
+    echo -e "\nStatus: ${GREEN}Active${RESET}\n"
+  else
+    echo -e "\nStatus: ${RED}Inactive${RESET}\n"
+  fi
+  echo -e "${BOLD}IP:${RESET} $(tailscale --socket=/tmp/tailscale.sock ip -4)"
+  echo -e "Logs: ${DIM}${CYAN}/tmp/tailscaled.log${RESET}"
+  exit 0
+fi
+
+echo -e "${YELLOW}[*] Tailscale not running, starting...${RESET}"
+
 pkill tailscaled 2>/dev/null
+sleep 1
 rm -f /tmp/tailscale.sock
 
-# Start daemon
 tailscaled --state=~/.config/tailscale/tailscaled.state \
-           --socket=/tmp/tailscale.sock \
-           --tun=userspace-networking > /tmp/tailscaled.log 2>&1 &
+  --socket=/tmp/tailscale.sock \
+  --tun=userspace-networking > /tmp/tailscaled.log 2>&1 &
 
-# Wait for readiness
-for i in {1..10}; do
-  if tailscale --socket=/tmp/tailscale.sock status 2>/dev/null; then
+echo -e "${YELLOW}[-] Waiting for Tailscale daemon...${RESET}"
+READY=0
+for i in {1..20}; do
+  if [ -S /tmp/tailscale.sock ]; then
+    READY=1
     break
   fi
   sleep 1
 done
 
-# Connect
+if [ $READY -eq 0 ]; then
+  echo -e "${RED}[X] Tailscale daemon failed to start. Check /tmp/tailscaled.log${RESET}"
+  exit 1
+fi
+
 tailscale --socket=/tmp/tailscale.sock up \
-  --auth-key=$(cat ~/.config/tailscale/authkey) \
+  --auth-key=$TS_AUTH_KEY \
   --accept-routes \
   --accept-dns=false
 
-# Show status
-echo -e "\n✅ \033[1mTailscale Active\033[0m"
-tailscale --socket=/tmp/tailscale.sock status --peers=false
-echo -e "🔗 IP: $(tailscale --socket=/tmp/tailscale.sock ip -4)\n📂 Logs: /tmp/tailscaled.log"
+if [ $? -ne 0 ]; then
+  echo -e "${RED}[X] Tailscale failed to authenticate. Check /tmp/tailscaled.log${RESET}"
+  exit 1
+fi
+
+sleep 2
+[ $VERBOSE -eq 1 ] && tailscale --socket=/tmp/tailscale.sock status --peers=false
+if tailscale --socket=/tmp/tailscale.sock status &>/dev/null; then
+  echo -e "\nStatus: ${GREEN}Active${RESET}\n"
+else
+  echo -e "\nStatus: ${RED}Inactive${RESET}\n"
+fi
+echo -e "${BOLD}IP:${RESET} $(tailscale --socket=/tmp/tailscale.sock ip -4)"
+echo -e "Logs: ${DIM}${CYAN}/tmp/tailscaled.log${RESET}"

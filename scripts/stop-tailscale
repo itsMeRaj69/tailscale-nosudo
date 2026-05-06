@@ -1,18 +1,39 @@
 #!/bin/bash
-# Pre-shutdown status
-echo -e "\n=== CURRENT STATUS ==="
-tailscale --socket=/tmp/tailscale.sock status --peers=false 2>/dev/null || echo "Not active"
 
-# Shutdown
-echo -e "\n🛑 Stopping Tailscale..."
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+CYAN='\033[0;36m'
+DIM='\033[2m'
+BOLD='\033[1m'
+RESET='\033[0m'
+
+VERBOSE=0
+[ "$1" = "--verbose" ] && VERBOSE=1
+
+echo -e "${YELLOW}[-] Checking status...${RESET}"
+
+if [ ! -S /tmp/tailscale.sock ]; then
+    echo -e "${YELLOW}[!] Tailscale is not running${RESET}"
+    exit 0
+fi
+
+[ $VERBOSE -eq 1 ] && tailscale --socket=/tmp/tailscale.sock status --peers=false 2>/dev/null
+if tailscale --socket=/tmp/tailscale.sock status &>/dev/null; then 
+  echo -e "\nStatus: ${GREEN}Active${RESET}\n"
+else 
+  echo -e "\nStatus: ${RED}Inactive${RESET}\n"
+fi
+
+echo -e "${YELLOW}[-] Stopping Tailscale...${RESET}"
 tailscale --socket=/tmp/tailscale.sock down 2>/dev/null
-pkill -9 tailscaled 2>/dev/null
+pkill tailscaled 2>/dev/null
+sleep 1
 rm -f /tmp/tailscale.sock
 
-# Verify
-if ! pgrep tailscaled >/dev/null; then
-  echo -e "\n✅ \033[1mTailscale fully stopped\033[0m"
-else
-  echo -e "\n❌ \033[1mWarning: Processes still running!\033[0m"
+if ! pgrep tailscaled >/dev/null; then 
+  echo -e "\nDone."
+else 
+  echo -e "\n${RED}[X] Warning: Processes still running${RESET}"
   ps aux | grep tailscale | grep -v grep
 fi
