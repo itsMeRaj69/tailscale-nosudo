@@ -27,15 +27,14 @@ curl -fsSL https://tailscale.com/install.sh | sh
 > 1. Visit github.com
 > 2. Go to Profile -> Settings -> [Codespaces](https://github.com/settings/codespaces)
 > 3. Under **Secrets**, tap on "New secret" button.
-> 4. Paste `TS_AUTH_KEY` inside the input box which is below the "Name" field, and Paste the copied key from [Tailscale - AuthKeys](https://login.tailscale.com/admin/authkeys) inside the input box of the "Value" field.
+> 4. Paste `TS_AUTH_KEY` inside the input box which is below the "Name" field, and Paste the copied [Tailscale - AuthKeys](https://login.tailscale.com/admin/authkeys) inside the input box of the "Value" field.
 > 5. Click on the "Select repositories" button and select the repos in which you want to access your AuthKey.
 > 6. Lastly, click on the Add secret button.
 
-> For Linux Machines
+> For Linux machines 
 >
 > ```shell
-    echo 'TS_AUTH_KEY=pasteyourauthkey' >> ~/.env ```
-
+>    echo 'TS_AUTH_KEY=pasteyourauthkey' >> ~/.env ```
 
 ### 4. Download Control Scripts
 ```bash
